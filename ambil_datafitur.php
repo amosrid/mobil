@@ -47,6 +47,7 @@ if ($result->num_rows > 0) {
                 $car['variants'][] = array(
                     'name' => $variant_row['name'],
                     'price' => $variant_row['price'],
+                    'image' => $variant_row['image'],
                     'specs' => array(
                         'mesin' => $variant_row['mesin'],
                         'tenaga' => $variant_row['tenaga'],

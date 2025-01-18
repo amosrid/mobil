@@ -3,29 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Perbandingan Mobil Honda - Bandingkan spesifikasi dan harga mobil Honda">
+    <meta name="theme-color" content="#ED1B2F">
     <title>Perbandingan Mobil Honda</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* CSS Custom Properties untuk konsistensi */
         :root {
             --red-light: #ED1B2F;
             --red-dark: #C00000;
             --black: #000000;
             --black-red: #120404;
             --gray: #505050;
+            --transition-speed: 0.3s;
+            --border-radius: 10px;
+            --spacing-unit: 1rem;
+        }
+
+        /* Reset dan Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Manrope', system-ui, -apple-system, sans-serif;
             background-color: #f8f9fa;
+            line-height: 1.6;
         }
 
-        .comparison-header {
-            background-color: var(--black-red);
-            color: white;
-            padding: 2rem 0;
+        /* Loading Skeleton Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
         }
 
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: var(--border-radius);
+        }
+        
+        /* Card Styles with improved accessibility and animations */
         .car-select-card {
             border: 2px dashed #ddd;
             height: 300px;
@@ -34,94 +56,158 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition-speed) ease;
             background: white;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .car-select-card:focus-within {
+            outline: 3px solid var(--red-light);
+            outline-offset: 2px;
         }
 
         .car-select-card:hover {
             border-color: var(--red-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .car-select-card.selected {
-            border: 2px solid var(--red-light);
-        }
-
-        .car-select-card i {
-            font-size: 3rem;
-            color: var(--gray);
-            margin-bottom: 1rem;
+        /* Improved Image Handling */
+        .car-image-container {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
         }
 
         .car-image {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .car-image.loading {
+            filter: blur(10px);
+        }
+
+        /* Enhanced Table Styles */
+        .comparison-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .comparison-table th {
             background-color: var(--red-light);
             color: white;
-            padding: 1rem;
+            padding: var(--spacing-unit);
+            font-weight: 600;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .comparison-table td {
-            padding: 1rem;
+            padding: var(--spacing-unit);
             background-color: white;
+            border-bottom: 1px solid #eee;
+            transition: background-color var(--transition-speed) ease;
         }
 
+        .comparison-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        /* Modern Button Styles */
         .btn-primary {
             background-color: var(--red-light);
             border-color: var(--red-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary:hover {
             background-color: var(--red-dark);
             border-color: var(--red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(237, 27, 47, 0.2);
+        }
+
+        /* Modal Enhancements */
+        .modal-content {
+            border-radius: var(--border-radius);
+            overflow: hidden;
         }
 
         .modal-car-item {
             cursor: pointer;
-            padding: 1rem;
+            padding: var(--spacing-unit);
             border: 1px solid #ddd;
             margin-bottom: 0.5rem;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+            border-radius: var(--border-radius);
+            transition: all var(--transition-speed) ease;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: var(--spacing-unit);
         }
 
         .modal-car-item:hover {
             background-color: #f8f9fa;
             border-color: var(--red-light);
+            transform: translateX(5px);
         }
+        
 
-        .spec-row:nth-child(odd) {
-            background-color: #f8f9fa;
-        }
-
-        .feature-badge {
-            background-color: var(--red-light);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            margin: 0.25rem;
-            display: inline-block;
-        }
-
+        /* Responsive Design Improvements */
         @media (max-width: 768px) {
             .car-select-card {
-                height: 200px;
-                margin-bottom: 1rem;
+                height: auto;
+                padding: var(--spacing-unit);
+            }
+
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .modal-car-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .btn-primary, 
+            .modal,
+            .car-select-card i {
+                display: none;
+            }
+
+            .comparison-table th {
+                background-color: #fff !important;
+                color: #000;
+                border-bottom: 2px solid #000;
+            }
+
+            body {
+                background-color: #fff;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <div class="comparison-header">
-        <div class="container">
-            <h1 class="text-center mb-0">Perbandingan Mobil Honda</h1>
-        </div>
-    </div>
 
     <!-- Car Selection Section -->
     <div class="container my-5">
@@ -130,8 +216,9 @@
                 <div class="car-select-card" data-bs-toggle="modal" data-bs-target="#carModal1">
                     <div id="car1Content">
                         <i class="fas fa-plus-circle"></i>
-                        <h4>Pilih Mobil 1</h4>
+                        
                     </div>
+                    <h4>Pilih Mobil 1</h4>
                 </div>
                 <div id="variantSelect1" class="mt-3" style="display: none;">
                     <select class="form-select" id="variant1">
@@ -143,8 +230,9 @@
                 <div class="car-select-card" data-bs-toggle="modal" data-bs-target="#carModal2">
                     <div id="car2Content">
                         <i class="fas fa-plus-circle"></i>
-                        <h4>Pilih Mobil 2</h4>
+                       
                     </div>
+                    <h4>Pilih Mobil 2</h4>
                 </div>
                 <div id="variantSelect2" class="mt-3" style="display: none;">
                     <select class="form-select" id="variant2">
@@ -262,40 +350,54 @@
             `).join('');
         }
 
-        // Select car
-        function selectCar(modalId, car) {
-            const carKey = modalId === 'carModal1' ? 'car1' : 'car2';
-            selectedCars[carKey] = car;
+// Select car
+function selectCar(modalId, car) {
+    const carKey = modalId === 'carModal1' ? 'car1' : 'car2';
+    selectedCars[carKey] = car;
 
-            // Update card content
-            document.getElementById(`${carKey}Content`).innerHTML = `
-                <img src="${car.image}" alt="${car.name}" class="car-image">
-                <h4>${car.name}</h4>
-            `;
+    // Update card content
+    const carContent = document.getElementById(`${carKey}Content`);
+    carContent.innerHTML = `
+        <img src="${car.image}" alt="${car.name}" class="car-image">
+    `;
 
-            // Show variant select
-            const variantSelect = document.getElementById(`variantSelect${carKey === 'car1' ? '1' : '2'}`);
-            variantSelect.style.display = 'block';
-            const variantSelectElement = document.getElementById(`variant${carKey === 'car1' ? '1' : '2'}`);
-            variantSelectElement.innerHTML = `
-                <option value="">Pilih Variant</option>
-                ${car.variants.map(variant => `
-                    <option value="${variant.name}">${variant.name} - ${formatPrice(variant.price)}</option>
-                `).join('')}
-            `;
+    // Remove "Pilih Mobil 1" or "Pilih Mobil 2" text
+    const carSelectCard = carContent.closest('.car-select-card');
+    const textElement = carSelectCard.querySelector('h4'); // Target the <h4> element
+    if (textElement) {
+        textElement.remove(); // Remove the <h4> element
+    }
 
-            // Add event listener for variant selection
-            variantSelectElement.addEventListener('change', (e) => {
-                const selectedVariant = car.variants.find(v => v.name === e.target.value);
-                selectedVariants[`variant${carKey === 'car1' ? '1' : '2'}`] = selectedVariant;
-                if (selectedVariants.variant1 && selectedVariants.variant2) {
-                    updateComparison();
-                }
-            });
+    // Show variant select
+    const variantSelect = document.getElementById(`variantSelect${carKey === 'car1' ? '1' : '2'}`);
+    variantSelect.style.display = 'block';
+    const variantSelectElement = document.getElementById(`variant${carKey === 'car1' ? '1' : '2'}`);
+    variantSelectElement.innerHTML = `
+        <option value="">Pilih Variant ${car.name}</option>
+        ${car.variants.map(variant => `
+            <option value="${variant.name}" data-image="${variant.image}">
+                ${variant.name} - ${formatPrice(variant.price)}
+            </option>
+        `).join('')}
+    `;
 
-            // Close modal
-            bootstrap.Modal.getInstance(document.getElementById(modalId)).hide();
+    // Add event listener for variant selection
+    variantSelectElement.addEventListener('change', (e) => {
+        const selectedVariant = car.variants.find(v => v.name === e.target.value);
+        selectedVariants[`variant${carKey === 'car1' ? '1' : '2'}`] = selectedVariant;
+
+        // Update image
+        const selectedImage = e.target.selectedOptions[0].dataset.image;
+        carContent.querySelector('.car-image').src = selectedImage;
+
+        if (selectedVariants.variant1 && selectedVariants.variant2) {
+            updateComparison();
         }
+    });
+
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById(modalId)).hide();
+}
 
         // Update comparison table
         function updateComparison() {
