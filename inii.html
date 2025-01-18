@@ -1,0 +1,390 @@
+<style>
+/* Gaya Utama */
+/* Gaya Utama */
+#simulasi-kredit {
+    max-width: 800px; /* Lebar maksimum lebih kecil */
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+#simulasi-kredit h2 {
+    text-align: center;
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+#simulasi-kredit p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Gaya Gambar Mobil */
+#mobil-image-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#mobil-image {
+    width: 70vh;
+    max-width: 70vh;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Gaya Container */
+.container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.form-container, .hasil-container {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Gaya Form */
+#form-kredit label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#form-kredit select,
+#form-kredit input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#form-kredit input[type="range"] {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#form-kredit small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+#form-kredit button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#form-kredit button:hover {
+    background-color: #c0392b;
+}
+
+/* Gaya Hasil Simulasi */
+#hasil-simulasi {
+    display: none; /* Awalnya disembunyikan */
+    background-color: #fff;
+}
+
+#hasil-simulasi h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+}
+
+#hasil-simulasi p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+#hasil-simulasi span {
+    font-weight: bold;
+    color: #333;
+}
+
+#cta-kredit {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#cta-kredit:hover {
+    background-color: #2980b9;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .form-container, .hasil-container {
+        width: 100%;
+    }
+}
+</style><div id="simulasi-kredit">
+    <h2>Simulasi Kredit Mobil</h2>
+    <p>Gunakan simulasi kredit mobil kami untuk menghitung cicilan bulanan berdasarkan DP, tenor, dan pilihan mobil Anda.</p>
+
+    <!-- Gambar Mobil -->
+    <div id="mobil-image-container" style="display: none;">
+        <img id="mobil-image" src="" alt="Gambar Mobil">
+    </div>
+
+    <div class="container">
+        <!-- Form Simulasi -->
+        <div class="form-container">
+            <form id="form-kredit">
+                <!-- Pilih Mobil -->
+                <label for="mobil">Pilih Mobil:</label>
+                <select id="mobil" name="mobil">
+                    <option value="">-- Pilih Mobil --</option>
+                </select>
+
+                <!-- Pilih Varian -->
+                <label for="varian">Pilih Varian:</label>
+                <select id="varian" name="varian">
+                    <option value="">-- Pilih Varian --</option>
+                </select>
+
+                <!-- Input DP -->
+                <label for="dp">Down Payment (DP):</label>
+                <input type="range" id="dp-slider" min="30" max="50" step="1" value="30">
+                <input type="text" id="dp" name="dp" placeholder="Contoh: 30% atau 100000000">
+                <small>Minimal 30%, Maksimal 50% dari harga mobil.</small>
+
+                <!-- Pilih Tenor -->
+                <label for="tenor">Tenor (Bulan):</label>
+                <select id="tenor" name="tenor">
+                    <option value="12">12 Bulan</option>
+                    <option value="24">24 Bulan</option>
+                    <option value="36">36 Bulan</option>
+                    <option value="48">48 Bulan</option>
+                    <option value="60">60 Bulan</option>
+                </select>
+
+                <!-- Tombol Hitung -->
+                <button type="button" id="hitung">Hitung Cicilan</button>
+            </form>
+        </div>
+
+        <!-- Hasil Simulasi -->
+        <div id="hasil-simulasi" class="hasil-container">
+            <h3>Hasil Simulasi Kredit</h3>
+            <p>Harga Mobil: <span id="harga-mobil">-</span></p>
+            <p>DP: <span id="display-dp">-</span> (<span id="display-dp-persen">-</span>)</p>
+            <p>Tenor: <span id="display-tenor">-</span> Bulan</p>
+            <p>Cicilan per Bulan: <span id="cicilan">-</span></p>
+            <button id="cta-kredit">Ajukan Kredit Sekarang</button>
+        </div>
+    </div>
+</div>
+<script>document.addEventListener("DOMContentLoaded", function() {
+    const jsonUrl = 'ambil_datafitur.php';
+    const mobilSelect = document.getElementById('mobil');
+    const varianSelect = document.getElementById('varian');
+    const dpInput = document.getElementById('dp');
+    const dpSlider = document.getElementById('dp-slider');
+    const tenorSelect = document.getElementById('tenor');
+    const hitungButton = document.getElementById('hitung');
+    const hargaMobilDisplay = document.getElementById('harga-mobil');
+    const displayDp = document.getElementById('display-dp');
+    const displayDpPersen = document.getElementById('display-dp-persen');
+    const displayTenor = document.getElementById('display-tenor');
+    const cicilanDisplay = document.getElementById('cicilan');
+    const hasilSimulasi = document.getElementById('hasil-simulasi');
+    const ctaKredit = document.getElementById('cta-kredit');
+    const mobilImage = document.getElementById('mobil-image');
+    const mobilImageContainer = document.getElementById('mobil-image-container');
+
+    let dataMobil = [];
+    let selectedMobil = null;
+    let hargaMobil = 0;
+
+    // Fungsi untuk memformat angka dengan pemisah ribuan
+    function formatPrice(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // Fungsi untuk mengisi select option mobil
+    function fillMobilSelect(mobilList) {
+        mobilList.forEach(mobil => {
+            const option = document.createElement('option');
+            option.value = mobil.name;
+            option.textContent = mobil.name;
+            mobilSelect.appendChild(option);
+        });
+    }
+
+    // Fungsi untuk mengisi select option varian
+    function fillVarianSelect(varianList) {
+        varianSelect.innerHTML = '<option value="">-- Pilih Varian --</option>';
+        varianList.forEach(varian => {
+            const option = document.createElement('option');
+            option.value = varian.price;
+            option.textContent = `${varian.name} (${formatPrice(varian.price)})`;
+            varianSelect.appendChild(option);
+        });
+    }
+
+    // Fungsi untuk menghitung cicilan
+    function hitungCicilan(harga, dp, tenor) {
+        const pokok = harga - dp;
+        const bunga = 0.08; // Asumsi bunga 8% per tahun
+        const bungaPerBulan = bunga / 12;
+        const cicilan = (pokok * bungaPerBulan) / (1 - Math.pow(1 + bungaPerBulan, -tenor));
+        return Math.round(cicilan);
+    }
+
+    // Fungsi untuk validasi DP
+    function validateDp(dp, harga) {
+        const dpMin = 0.3 * harga; // Minimal 30%
+        const dpMax = 0.5 * harga; // Maksimal 50%
+        return dp >= dpMin && dp <= dpMax;
+    }
+
+    // Fungsi untuk memperbarui placeholder DP
+    function updateDpPlaceholder(harga) {
+        const dpMin = 0.3 * harga; // 30% dari harga
+        dpInput.placeholder = `Contoh: 30% atau ${formatPrice(dpMin)}`;
+    }
+
+    // Event listener untuk select mobil
+    mobilSelect.addEventListener('change', function() {
+        const selectedMobilName = this.value;
+        selectedMobil = dataMobil.find(mobil => mobil.name === selectedMobilName);
+        if (selectedMobil) {
+            fillVarianSelect(selectedMobil.variants);
+            mobilImage.src = selectedMobil.image;
+            mobilImageContainer.style.display = 'flex'; // Tampilkan container gambar
+        } else {
+            mobilImage.src = '';
+            mobilImageContainer.style.display = 'none'; // Sembunyikan container gambar
+        }
+    });
+
+    // Event listener untuk select varian
+    varianSelect.addEventListener('change', function() {
+        hargaMobil = parseInt(this.value) || 0;
+        hargaMobilDisplay.textContent = formatPrice(hargaMobil);
+        updateDpPlaceholder(hargaMobil); // Perbarui placeholder DP
+        updateDpSlider(); // Perbarui nilai DP slider
+    });
+
+    // Event listener untuk DP slider
+    dpSlider.addEventListener('input', function() {
+        const dpPersen = parseInt(this.value);
+        dpInput.value = `${dpPersen}%`;
+        updateDpValue(dpPersen);
+    });
+
+    // Event listener untuk input DP
+    dpInput.addEventListener('input', function() {
+        const dpValue = this.value.trim();
+        if (dpValue.endsWith('%')) {
+            const dpPersen = parseFloat(dpValue);
+            if (!isNaN(dpPersen) && dpPersen >= 30 && dpPersen <= 50) {
+                dpSlider.value = dpPersen;
+                updateDpValue(dpPersen);
+            }
+        }
+    });
+
+    // Event listener untuk tombol hitung
+    hitungButton.addEventListener('click', function() {
+        const dpValue = dpInput.value.trim();
+        const tenor = parseInt(tenorSelect.value) || 12;
+
+        // Jika varian tidak dipilih, gunakan harga termurah
+        if (!hargaMobil && selectedMobil) {
+            hargaMobil = Math.min(...selectedMobil.variants.map(v => parseInt(v.price)));
+            hargaMobilDisplay.textContent = formatPrice(hargaMobil);
+            updateDpPlaceholder(hargaMobil); // Perbarui placeholder DP
+        }
+
+        // Konversi DP ke Rupiah
+        let dp = 0;
+        if (dpValue.endsWith('%')) {
+            const persen = parseFloat(dpValue) / 100;
+            dp = persen * hargaMobil;
+        } else {
+            dp = parseFloat(dpValue);
+        }
+
+        // Validasi DP
+        if (!validateDp(dp, hargaMobil)) {
+            alert('DP harus antara 30% dan 50% dari harga mobil.');
+            return;
+        }
+
+        // Hitung cicilan
+        const cicilan = hitungCicilan(hargaMobil, dp, tenor);
+        const dpPersen = ((dp / hargaMobil) * 100).toFixed(2);
+
+        // Tampilkan hasil
+        displayDp.textContent = formatPrice(dp);
+        displayDpPersen.textContent = `${dpPersen}%`;
+        displayTenor.textContent = tenor;
+        cicilanDisplay.textContent = formatPrice(cicilan);
+
+        // Tampilkan hasil simulasi
+        hasilSimulasi.style.display = 'block';
+    });
+
+    // Event listener untuk tombol CTA
+    ctaKredit.addEventListener('click', function() {
+        alert('Terima kasih! Tim kami akan segera menghubungi Anda.');
+    });
+
+    // Fungsi untuk memperbarui nilai DP
+    function updateDpValue(dpPersen) {
+        if (hargaMobil > 0) {
+            const dp = (dpPersen / 100) * hargaMobil;
+            dpInput.value = `${dpPersen}%`;
+            dpSlider.value = dpPersen;
+        }
+    }
+
+    // Fungsi untuk memperbarui DP slider
+    function updateDpSlider() {
+        if (hargaMobil > 0) {
+            dpSlider.disabled = false;
+        } else {
+            dpSlider.disabled = true;
+        }
+    }
+
+    // Ambil data dari JSON
+    fetch(jsonUrl)
+        .then(response => response.json())
+        .then(data => {
+            dataMobil = data;
+            fillMobilSelect(dataMobil);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});</script>

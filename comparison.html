@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perbandingan Mobil Honda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --red-light: #ED1B2F;
+            --red-dark: #C00000;
+            --black: #000000;
+            --black-red: #120404;
+            --gray: #505050;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .comparison-header {
+            background-color: var(--black-red);
+            color: white;
+            padding: 2rem 0;
+        }
+
+        .car-select-card {
+            border: 2px dashed #ddd;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .car-select-card:hover {
+            border-color: var(--red-light);
+        }
+
+        .car-select-card.selected {
+            border: 2px solid var(--red-light);
+        }
+
+        .car-select-card i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .car-image {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-table th {
+            background-color: var(--red-light);
+            color: white;
+            padding: 1rem;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            background-color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--red-light);
+            border-color: var(--red-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .modal-car-item {
+            cursor: pointer;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-car-item:hover {
+            background-color: #f8f9fa;
+            border-color: var(--red-light);
+        }
+
+        .spec-row:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .feature-badge {
+            background-color: var(--red-light);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin: 0.25rem;
+            display: inline-block;
+        }
+
+        @media (max-width: 768px) {
+            .car-select-card {
+                height: 200px;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="comparison-header">
+        <div class="container">
+            <h1 class="text-center mb-0">Perbandingan Mobil Honda</h1>
+        </div>
+    </div>
+
+    <!-- Car Selection Section -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="car-select-card" data-bs-toggle="modal" data-bs-target="#carModal1">
+                    <div id="car1Content">
+                        <i class="fas fa-plus-circle"></i>
+                        <h4>Pilih Mobil 1</h4>
+                    </div>
+                </div>
+                <div id="variantSelect1" class="mt-3" style="display: none;">
+                    <select class="form-select" id="variant1">
+                        <option value="">Pilih Variant</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="car-select-card" data-bs-toggle="modal" data-bs-target="#carModal2">
+                    <div id="car2Content">
+                        <i class="fas fa-plus-circle"></i>
+                        <h4>Pilih Mobil 2</h4>
+                    </div>
+                </div>
+                <div id="variantSelect2" class="mt-3" style="display: none;">
+                    <select class="form-select" id="variant2">
+                        <option value="">Pilih Variant</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div id="comparisonTable" class="mt-5" style="display: none;">
+            <div class="table-responsive">
+                <table class="table comparison-table">
+                    <tbody id="compareTableBody">
+                        <!-- Comparison data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Car Selection Modals -->
+    <div class="modal fade" id="carModal1" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Mobil 1</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Cari mobil..." id="searchCar1">
+                    </div>
+                    <div id="carList1">
+                        <!-- Car list will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="carModal2" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pilih Mobil 2</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Cari mobil..." id="searchCar2">
+                    </div>
+                    <div id="carList2">
+                        <!-- Car list will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedCars = {
+            car1: null,
+            car2: null
+        };
+
+        let selectedVariants = {
+            variant1: null,
+            variant2: null
+        };
+
+        // Format price to IDR
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Populate car list in modal
+        function populateCarList(carList, searchInput, modalId) {
+            fetch('ambil_datafitur.php')
+                .then(response => response.json())
+                .then(cars => {
+                    const listElement = document.getElementById(carList);
+                    
+                    // Search functionality
+                    document.getElementById(searchInput).addEventListener('input', (e) => {
+                        const searchTerm = e.target.value.toLowerCase();
+                        renderCarList(cars.filter(car => 
+                            car.name.toLowerCase().includes(searchTerm)
+                        ), listElement, modalId);
+                    });
+
+                    // Initial render
+                    renderCarList(cars, listElement, modalId);
+                });
+        }
+
+        // Render car list
+        function renderCarList(cars, listElement, modalId) {
+            listElement.innerHTML = cars.map(car => `
+                <div class="modal-car-item" onclick="selectCar('${modalId}', ${JSON.stringify(car).replace(/"/g, '&quot;')})">
+                    <div class="d-flex align-items-center">
+                        <img src="${car.image}" alt="${car.name}" style="width: 100px; height: auto; margin-right: 1rem;">
+                        <div>
+                            <h5 class="mb-1">${car.name}</h5>
+                            <p class="mb-0">Mulai dari ${formatPrice(car.startingPrice)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select car
+        function selectCar(modalId, car) {
+            const carKey = modalId === 'carModal1' ? 'car1' : 'car2';
+            selectedCars[carKey] = car;
+
+            // Update card content
+            document.getElementById(`${carKey}Content`).innerHTML = `
+                <img src="${car.image}" alt="${car.name}" class="car-image">
+                <h4>${car.name}</h4>
+            `;
+
+            // Show variant select
+            const variantSelect = document.getElementById(`variantSelect${carKey === 'car1' ? '1' : '2'}`);
+            variantSelect.style.display = 'block';
+            const variantSelectElement = document.getElementById(`variant${carKey === 'car1' ? '1' : '2'}`);
+            variantSelectElement.innerHTML = `
+                <option value="">Pilih Variant</option>
+                ${car.variants.map(variant => `
+                    <option value="${variant.name}">${variant.name} - ${formatPrice(variant.price)}</option>
+                `).join('')}
+            `;
+
+            // Add event listener for variant selection
+            variantSelectElement.addEventListener('change', (e) => {
+                const selectedVariant = car.variants.find(v => v.name === e.target.value);
+                selectedVariants[`variant${carKey === 'car1' ? '1' : '2'}`] = selectedVariant;
+                if (selectedVariants.variant1 && selectedVariants.variant2) {
+                    updateComparison();
+                }
+            });
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById(modalId)).hide();
+        }
+
+        // Update comparison table
+        function updateComparison() {
+            const variant1 = selectedVariants.variant1;
+            const variant2 = selectedVariants.variant2;
+
+            if (variant1 && variant2) {
+                document.getElementById('comparisonTable').style.display = 'block';
+                document.getElementById('compareTableBody').innerHTML = `
+                    <tr>
+                        <th>Fitur</th>
+                        <th>${variant1.name}</th>
+                        <th>${variant2.name}</th>
+                    </tr>
+                    <tr>
+                        <td>Harga</td>
+                        <td>${formatPrice(variant1.price)}</td>
+                        <td>${formatPrice(variant2.price)}</td>
+                    </tr>
+                    <tr>
+                        <td>Mesin</td>
+                        <td>${variant1.specs.mesin}</td>
+                        <td>${variant2.specs.mesin}</td>
+                    </tr>
+                    <tr>
+                        <td>Tenaga</td>
+                        <td>${variant1.specs.tenaga}</td>
+                        <td>${variant2.specs.tenaga}</td>
+                    </tr>
+                    <tr>
+                        <td>Transmisi</td>
+                        <td>${variant1.specs.transmisi}</td>
+                        <td>${variant2.specs.transmisi}</td>
+                    </tr>
+                    <tr>
+                        <td>Konsumsi Bahan Bakar</td>
+                        <td>${variant1.specs.konsumsiBahanBakar}</td>
+                        <td>${variant2.specs.konsumsiBahanBakar}</td>
+                    </tr>
+                    <tr>
+                        <td>Kapasitas Penumpang</td>
+                        <td>${variant1.specs.kapasitasPenumpang}</td>
+                        <td>${variant2.specs.kapasitasPenumpang}</td>
+                    </tr>
+                    <tr>
+                        <td>Dimensi</td>
+                        <td>${variant1.specs.dimensi}</td>
+                        <td>${variant2.specs.dimensi}</td>
+                    </tr>
+                    <tr>
+                        <td>Ground Clearance</td>
+                        <td>${variant1.specs.groundClearance}</td>
+                        <td>${variant2.specs.groundClearance}</td>
+                    </tr>
+                    <tr>
+                        <td>Fitur Keamanan</td>
+                        <td>${variant1.specs.fiturKeamanan}</td>
+                        <td>${variant2.specs.fiturKeamanan}</td>
+                    </tr>
+                    <tr>
+                        <td>Hiburan</td>
+                        <td>${variant1.specs.hiburan}</td>
+                        <td>${variant2.specs.hiburan}</td>
+                    </tr>
+                    <tr>
+                        <td>Garansi</td>
+                        <td>${variant1.specs.garansi}</td>
+                        <td>${variant2.specs.garansi}</td>
+                    </tr>
+                    <tr>
+                        <td>Fitur Relevan</td>
+                        <td>${variant1.specs.fiturRelevan.join('<br>')}</td>
+                        <td>${variant2.specs.fiturRelevan.join('<br>')}</td>
+                    </tr>
+                    <tr>
+                        <td>Fitur Unik</td>
+                        <td>${variant1.specs.fiturUnik.join('<br>')}</td>
+                        <td>${variant2.specs.fiturUnik.join('<br>')}</td>
+                    </tr>
+                    <tr>
+                        <td>Aksi</td>
+                        <td>
+                            <a href="https://wa.me/6285643376540?text=Halo%20Admin%20Honda%20Pasuruan,%20saya%20tertarik%20dengan%20${encodeURIComponent(variant1.name)}" 
+                               class="btn btn-primary" target="_blank">
+                                <i class="fab fa-whatsapp me-2"></i>Hubungi Sales
+                            </a>
+                        </td>
+                        <td>
+                            <a href="https://wa.me/6285643376540?text=Halo%20Admin%20Honda%20Pasuruan,%20saya%20tertarik%20dengan%20${encodeURIComponent(variant2.name)}" 
+                               class="btn btn-primary" target="_blank">
+                                <i class="fab fa-whatsapp me-2"></i>Hubungi Sales
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Initialize car lists when modals are shown
+        document.getElementById('carModal1').addEventListener('show.bs.modal', () => {
+            populateCarList('carList1', 'searchCar1', 'carModal1');
+        });
+
+        document.getElementById('carModal2').addEventListener('show.bs.modal', () => {
+            populateCarList('carList2', 'searchCar2', 'carModal2');
+        });
+    </script>
+</body>
+</html>

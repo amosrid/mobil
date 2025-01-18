@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<!-- Honda BR-V -->
+<span id="honda-br-v-starting-price"></span>
+<span id="br-v-s-mt"></span>
+<span id="br-v-e-mt"></span>
+<span id="br-v-e-cvt"></span>
+<span id="br-v-prestige-cvt"></span>
+<span id="br-v-prestige-hs-cvt"></span>
+
+<!-- Honda WR-V -->
+<span id="wr-v-starting-price"></span>
+<span id="wr-v-15-e-mt"></span>
+<span id="wr-v-15-e-cvt"></span>
+<span id="wr-v-15-rs-cvt"></span>
+<span id="wr-v-15-rs-hs-cvt"></span>
+
+<!-- Honda HR-V -->
+<span id="hr-v-starting-price"></span>
+<span id="hr-v-15-s-cvt"></span>
+<span id="hr-v-15-e-cvt"></span>
+<span id="hr-v-15-se-cvt"></span>
+<span id="hr-v-15-turbo-rs-cvt"></span>
+
+<!-- Tambahkan elemen lainnya sesuai kebutuhan -->
+<!-- Honda CR-V -->
+<span id="cr-v-starting-price"></span>
+<span id="cr-v-turbo-cvt"></span>
+<span id="cr-v-rs-cvt"></span>
+
+<!-- Honda City Hatchback -->
+<span id="city-hatchback-starting-price"></span>
+<span id="city-hatchback-15l-rs-mt"></span>
+<span id="city-hatchback-15l-rs-cvt"></span>
+<span id="city-hatchback-15l-rs-cvt-hs"></span>
+
+<!-- Honda Brio -->
+<span id="brio-satya-starting-price"></span>
+<span id="brio-satya-12-s-mt"></span>
+<span id="brio-satya-12-e-mt"></span>
+<span id="brio-satya-12-e-cvt"></span>
+<span id="brio-12-rs-mt"></span>
+<span id="brio-12-rs-cvt"></span>
+
+<!-- Honda Accord -->
+<span id="honda-accord-starting-price"></span>
+accord<span id="accord-rs-e:hev"></span>
+
+<!-- Honda Civic -->
+<span id="civic-starting-price"></span>
+<span id="civic-15-tc-rs-cvt"></span>
+
+<!-- Honda Mobilio -->
+<span id="mobilio-starting-price"></span>
+<span id="mobilio-s-mt"></span>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // URL JSON
+        const jsonUrl = 'ambil_datafitur.php';
+    
+        // Fungsi untuk memformat angka dengan pemisah ribuan
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    
+        // Fungsi untuk membuat ID dari nama varian
+        function createIdFromVariantName(variantName) {
+            return variantName
+                .toLowerCase() // Ubah ke huruf kecil
+                .replace(/ /g, '-') // Ganti spasi dengan tanda -
+                .replace(/\./g, '') // Hapus titik
+                .replace(/\//g, '-'); // Ganti slash dengan tanda -
+        }
+    
+        async function getCarPrices() {
+    try {
+        console.log('Fetching JSON from:', jsonUrl);
+        const response = await fetch(jsonUrl);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data); // Debugging untuk melihat data yang diterima
+
+        // Loop melalui setiap mobil
+        data.forEach(car => {
+            const startingPriceId = `${car.name.toLowerCase().replace(/ /g, '-')}-starting-price`;
+            const startingPriceElement = document.getElementById(startingPriceId);
+            console.log(`Starting Price Element ID: ${startingPriceId}`); // Debugging
+            console.log(`Found Element:`, startingPriceElement); // Debugging
+
+            if (startingPriceElement) {
+                startingPriceElement.textContent = `${formatPrice(car.startingPrice)}`;
+            }
+
+            // Loop untuk varian
+            car.variants.forEach(variant => {
+                const variantId = createIdFromVariantName(variant.name);
+                const variantElement = document.getElementById(variantId);
+                console.log(`Variant ID: ${variantId}`); // Debugging
+                console.log(`Found Element:`, variantElement); // Debugging
+
+                if (variantElement) {
+                    variantElement.textContent = formatPrice(variant.price);
+                } else {
+                    console.warn(`Elemen dengan ID "${variantId}" tidak ditemukan.`);
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+        // Jalankan fungsi
+        getCarPrices();
+    });
+    </script>
+</body>
+</html>

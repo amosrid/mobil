@@ -1,0 +1,493 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+<style>
+     :root {
+            --red-light: #ED1B2F;
+            --red-dark: #C00000;
+            --black: #000000;
+            --black-red: #120404;
+            --gray: #505050;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            color: var(--black);
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3, h4, h5, h6, .card-title {
+        font-family: 'Rubik', sans-serif;
+    }
+
+        .navbar {
+            background-color: var(--black-red) !important;
+        }
+
+        .car-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        
+
+        .price-tag {
+            background: var(--red-light);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .features-list {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .variant-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd; /* Border untuk visualisasi */
+    border-radius: 5px; /* Sudut melengkung */
+}
+.variant-row span {
+    flex: 1; /* Membuat span mengambil ruang yang tersedia */
+    max-width: 50%; /* Batasi lebar maksimum untuk nama varian */
+    word-wrap: break-word; /* Memungkinkan teks melipat ke baris baru */
+}
+.variant-row .fw-bold {
+    flex: 1; /* Membuat harga mengambil ruang yang tersedia */
+    max-width: 30%; /* Batasi lebar maksimum untuk harga */
+    text-align: right; /* Rata kanan untuk harga */
+}
+
+.variant-row a {
+    flex: 0 0 auto; /* Tombol WhatsApp tidak perlu flex */
+    margin-left: 10px; /* Jarak antara harga dan tombol WhatsApp */
+    color: #25D366; /* Warna hijau WhatsApp */
+    font-size: 2rem; /* Ukuran ikon WhatsApp */
+    text-decoration: none; /* Hapus garis bawah default */
+    transition: color 0.3s ease; /* Animasi perubahan warna */
+}
+
+.variant-row a:hover {
+    color: #128C7E; /* Warna hijau lebih gelap saat hover */
+}
+
+        .variant-row:hover {
+            background-color: var(--red-dark);
+            color: white;
+        }
+
+        .variant-row.selected {
+            border: 2px solid var(--red-light);
+        }
+
+        .search-box {
+            border-radius: 30px;
+            padding: 20px;
+            background: white;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .category-filter {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--red-light);
+            color: var(--red-light);
+        }
+        .category-filter:hover {
+            background: var(--red-dark);
+            color: white;
+        }
+
+        .category-filter.active {
+            background: var(--red-dark);
+            color: white;
+        }
+        .btn-primary {
+            background-color: var(--red-light);
+            border-color: var(--red-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .card-title {
+            color: var(--red-dark);
+            font-weight: bold;
+        }
+
+        .comparison-table th {
+            background-color: var(--red-light);
+            color: white;
+        }
+        .comparison-table {
+            display: none;
+        }
+
+        .nav-link {
+            color: white !important;
+            opacity: 0.8;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            opacity: 1;
+        }
+        .variants {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Jarak antara setiap variant-row */
+}
+@media (max-width: 768px) {
+    .d-flex.flex-wrap.mt-3 {
+        display: none !important; /* Sembunyikan div pada tampilan mobile */
+    }
+    .row {
+        flex-direction: column; /* Mengubah layout menjadi vertikal */
+        align-items: center; /* Pusatkan elemen */
+        gap: 10px;
+    }
+
+    .col-md-6 {
+        width: 100%; /* Full width pada mobile */
+        max-width: 300px; /* Batasi lebar maksimum */
+    }
+
+    #searchInput {
+        text-align: center; /* Pusatkan teks placeholder */
+    }
+
+    .price-range {
+        display: flex;
+        justify-content: flex-end; /* Taruh select di kanan */
+    }
+
+    #priceRange {
+        width: auto; /* Ukuran select menyesuaikan konten */
+        max-width: 150px; /* Batasi lebar maksimum */
+        font-size: 14px; /* Perkecil ukuran font */
+        padding: 5px 10px; /* Sesuaikan padding */
+    }
+}
+</style>
+<div class="container my-5">
+    <div class="search-box">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Cari model mobil...">
+            </div>
+            <div class="col-md-6">
+                <div class="price-range d-flex align-items-center gap-2">
+                    <select class="form-select" id="priceRange">
+                        <option value="">Semua Harga</option>
+                        <option value="0-300">Dibawah 300 Juta</option>
+                        <option value="300-500">300 - 500 Juta</option>
+                        <option value="500-plus">Diatas 500 Juta</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap mt-3">
+            <div class="category-filter active" data-category="all">Semua</div>
+            <div class="category-filter" data-category="hatchback">Hatchback</div>
+            <div class="category-filter" data-category="suv">SUV</div>
+            <div class="category-filter" data-category="sedan">Sedan</div>
+            <!-- <div class="category-filter" data-category="mpv">MPV</div> -->
+        </div>
+    </div>
+<div class="row g-4" id="carContainer">
+    <!-- Car cards will be inserted here by JavaScript -->
+</div>
+<div class="comparison-table">
+<h3 class="mb-4">Perbandingan Mobil</h3>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Fitur</th>
+                <th id="car1Header">Mobil 1</th>
+                <th id="car2Header">Mobil 2</th>
+            </tr>
+        </thead>
+        <tbody id="compareTableBody">
+            <!-- Comparison data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+ document.addEventListener('DOMContentLoaded', function () {
+    // Fungsi untuk memformat harga ke format mata uang IDR
+    function formatPrice(price) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(price);
+    }
+
+    function renderCars(filteredCars = cars) {
+    const container = document.getElementById('carContainer');
+    container.innerHTML = ''; // Kosongkan kontainer sebelum merender ulang
+
+    filteredCars.forEach(car => {
+        const startingPrice = parseInt(car.startingPrice); // Konversi ke number
+        const card = `
+            <div class="col-lg-6 col-xl-4 car-item" data-category="${car.category}">
+                <div class="car-card card h-100 position-relative">
+                    <img src="${car.image}" class="card-img-top" alt="${car.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${car.name}</h5>
+                        <p class="mb-2">Mulai dari <span class="price-tag">${formatPrice(startingPrice)}</span></p>
+                        
+                        <div class="variants">
+                            <h5 class="fw-bold">Tipe</h5>
+                            ${car.variants.map(variant => {
+                                const price = parseInt(variant.price); // Konversi ke number
+                                return `
+                                    <div class="variant-row d-flex justify-content-between align-items-center p-2" data-car-id="${car.id}" data-variant-name="${variant.name}" data-variant-price="${price}">
+                                        <span>${variant.name}</span>
+                                        <div>
+                                            <span class="fw-bold">${formatPrice(price)}</span>
+                                        </div>
+                                        <a href="https://wa.me/6285643376540?text=Halo,%20saya%20ingin%20membeli%20${encodeURIComponent(variant.name)}%20dengan%20harga%20${encodeURIComponent(formatPrice(price))}" class="ms-2" target="_blank">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += card;
+    });
+
+    // Inisialisasi event listener untuk baris varian
+    initializeVariantRowClickHandlers();
+}
+
+    // Fungsi untuk menginisialisasi event listener pada baris varian
+  function initializeVariantRowClickHandlers() {
+    const variantRows = document.querySelectorAll('.variant-row');
+    variantRows.forEach(row => {
+        row.addEventListener('click', function () {
+            const carId = this.dataset.carId;
+            const variantName = this.dataset.variantName;
+            const variantPrice = this.dataset.variantPrice;
+
+            // Check if this variant is already selected
+            const index = selectedVariants.findIndex(v => v.carId === carId && v.variantName === variantName);
+            if (index === -1) {
+                // Prevent selecting more than 2 variants
+                if (selectedVariants.length >= 2) {
+                    alert("Anda hanya dapat membandingkan 2 mobil sekaligus.");
+                    return;
+                }
+                // Add to selected variants if not already selected
+                selectedVariants.push({ carId, variantName, variantPrice });
+                this.classList.add('selected');
+            } else {
+                // Remove from selected variants if already selected
+                selectedVariants.splice(index, 1);
+                this.classList.remove('selected');
+            }
+
+            // Update comparison table if 2 variants are selected
+            if (selectedVariants.length === 2) {
+                updateComparison(); // Pastikan ini dipanggil!
+                document.querySelector('.comparison-table').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.querySelector('.comparison-table').style.display = 'none';
+            }
+        });
+    });
+}
+
+    // Fungsi untuk memperbarui tabel perbandingan
+    function updateComparison() {
+    console.log(selectedVariants); // Debug: Periksa isi selectedVariants
+    const comparisonTable = document.querySelector('.comparison-table');
+
+    if (selectedVariants.length === 2) {
+        comparisonTable.style.display = 'block';
+        document.getElementById('car1Header').textContent = selectedVariants[0].variantName;
+        document.getElementById('car2Header').textContent = selectedVariants[1].variantName;
+
+        // Temukan mobil yang dipilih
+        const car1 = cars.find(car => car.id == selectedVariants[0].carId);
+        const car2 = cars.find(car => car.id == selectedVariants[1].carId);
+
+        // Temukan varian yang dipilih
+        const variant1 = car1.variants.find(v => v.name === selectedVariants[0].variantName);
+        const variant2 = car2.variants.find(v => v.name === selectedVariants[1].variantName);
+
+        // Pastikan fiturRelevan dan fiturUnik selalu berupa array
+        const fiturRelevan1 = Array.isArray(variant1.specs.fiturRelevan) ? variant1.specs.fiturRelevan : [];
+        const fiturRelevan2 = Array.isArray(variant2.specs.fiturRelevan) ? variant2.specs.fiturRelevan : [];
+        const fiturUnik1 = Array.isArray(variant1.specs.fiturUnik) ? variant1.specs.fiturUnik : [];
+        const fiturUnik2 = Array.isArray(variant2.specs.fiturUnik) ? variant2.specs.fiturUnik : [];
+
+        const tbody = document.getElementById('compareTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td>Gambar</td>
+                <td><img src="${car1.image}" alt="${car1.name}" class="img-fluid" style="max-width: 150px;"></td>
+                <td><img src="${car2.image}" alt="${car2.name}" class="img-fluid" style="max-width: 150px;"></td>
+            </tr>
+            <tr>
+                <td>Harga</td>
+                <td>${formatPrice(selectedVariants[0].variantPrice)}</td>
+                <td>${formatPrice(selectedVariants[1].variantPrice)}</td>
+            </tr>
+               <tr>
+                <td>Mesin</td>
+                <td>${variant1.price}</td>
+                <td>${variant2.price}</td>
+            </tr>
+            <tr>
+                <td>Mesin</td>
+                <td>${variant1.specs.mesin}</td>
+                <td>${variant2.specs.mesin}</td>
+            </tr>
+            <tr>
+                <td>Tenaga</td>
+                <td>${variant1.specs.tenaga}</td>
+                <td>${variant2.specs.tenaga}</td>
+            </tr>
+            <tr>
+                <td>Transmisi</td>
+                <td>${variant1.specs.transmisi}</td>
+                <td>${variant2.specs.transmisi}</td>
+            </tr>
+            <tr>
+                <td>Konsumsi Bahan Bakar</td>
+                <td>${variant1.specs.konsumsiBahanBakar}</td>
+                <td>${variant2.specs.konsumsiBahanBakar}</td>
+            </tr>
+            <tr>
+                <td>Kapasitas Penumpang</td>
+                <td>${variant1.specs.kapasitasPenumpang}</td>
+                <td>${variant2.specs.kapasitasPenumpang}</td>
+            </tr>
+            <tr>
+                <td>Dimensi</td>
+                <td>${variant1.specs.dimensi}</td>
+                <td>${variant2.specs.dimensi}</td>
+            </tr>
+            <tr>
+                <td>Ground Clearance</td>
+                <td>${variant1.specs.groundClearance}</td>
+                <td>${variant2.specs.groundClearance}</td>
+            </tr>
+            <tr>
+                <td>Fitur Keamanan</td>
+                <td>${variant1.specs.fiturKeamanan}</td>
+                <td>${variant2.specs.fiturKeamanan}</td>
+            </tr>
+            <tr>
+                <td>Hiburan</td>
+                <td>${variant1.specs.hiburan}</td>
+                <td>${variant2.specs.hiburan}</td>
+            </tr>
+            <tr>
+                <td>Garansi</td>
+                <td>${variant1.specs.garansi}</td>
+                <td>${variant2.specs.garansi}</td>
+            </tr>
+            <tr>
+                <td>Fitur Relevan</td>
+                <td>${fiturRelevan1.join('<br>')}</td>
+                <td>${fiturRelevan2.join('<br>')}</td>
+            </tr>
+            <tr>
+                <td>Fitur Unik</td>
+                <td>${fiturUnik1.join('<br>')}</td>
+                <td>${fiturUnik2.join('<br>')}</td>
+            </tr>
+           
+            <tr>
+                <td>Aksi</td>
+                <td>
+                    <a href="https://wa.me/6285643376540?text=Halo%20Admin%20*Honda%20Pasuruan*,%20saya%20tertarik%20dengan%20iklan%20dari%20Website%20*${encodeURIComponent(car1.name)}*%20bisa%20minta%20info%20lebih%20lanjutnya" class="btn-hubungi" target="_blank">
+                        Hubungi Sekarang
+                    </a>
+                </td>
+                <td>
+                    <a href="https://wa.me/6285643376540?text=Halo%20Admin%20*Honda%20Pasuruan*,%20saya%20tertarik%20dengan%20iklan%20dari%20Website%20*${encodeURIComponent(car2.name)}*%20bisa%20minta%20info%20lebih%20lanjutnya" class="btn-hubungi" target="_blank">
+                        Hubungi Sekarang
+                    </a>
+                </td>
+            </tr>
+        `;
+    } else if (selectedVariants.length < 2) {
+        comparisonTable.style.display = 'none';
+    }
+}
+
+    // Fungsi untuk memfilter mobil berdasarkan pencarian, kategori, dan harga
+    function filterCars() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const priceRange = document.getElementById('priceRange').value;
+        const activeCategory = document.querySelector('.category-filter.active').dataset.category;
+
+        let filtered = cars.filter(car => {
+            const matchesSearch = car.name.toLowerCase().includes(searchTerm);
+            const matchesCategory = activeCategory === 'all' || car.category === activeCategory;
+            
+            let matchesPrice = true;
+            if (priceRange) {
+                const [min, max] = priceRange.split('-').map(Number);
+                if (max) {
+                    matchesPrice = car.startingPrice >= min * 1000000 && car.startingPrice <= max * 1000000;
+                } else {
+                    matchesPrice = car.startingPrice >= min * 1000000;
+                }
+            }
+
+            return matchesSearch && matchesCategory && matchesPrice;
+        });
+
+        renderCars(filtered);
+    }
+
+    // Event listener untuk pencarian dan filter harga
+    document.getElementById('searchInput').addEventListener('input', filterCars);
+    document.getElementById('priceRange').addEventListener('change', filterCars);
+
+    // Event listener untuk filter kategori
+    document.querySelectorAll('.category-filter').forEach(filter => {
+        filter.addEventListener('click', function () {
+            document.querySelector('.category-filter.active').classList.remove('active');
+            this.classList.add('active');
+            filterCars();
+        });
+    });
+
+    // Variabel global untuk menyimpan data mobil dan varian yang dipilih
+    let cars = [];
+    let selectedVariants = [];
+
+    // Ambil data dari PHP menggunakan fetch API
+    fetch('ambil_datafitur.php')
+        .then(response => response.json())
+        .then(data => {
+            cars = data; // Simpan data mobil ke variabel global
+            renderCars(cars); // Render mobil ke halaman
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>

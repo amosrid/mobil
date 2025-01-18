@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honda Pasuruan - Filter Mobil</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --red-light: #ED1B2F;
+            --red-dark: #C00000;
+            --black: #000000;
+            --black-red: #120404;
+            --gray: #505050;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            color: var(--black);
+            background-color: #f8f9fa;
+        }
+
+        h1, h2, h3, h4, h5, h6, .card-title {
+            font-family: 'Rubik', sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--black-red) !important;
+        }
+
+        .car-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .price-tag {
+            background: var(--red-light);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .variant-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .variant-row span {
+            flex: 1;
+            max-width: 50%;
+            word-wrap: break-word;
+        }
+
+        .variant-row .fw-bold {
+            flex: 1;
+            max-width: 30%;
+            text-align: right;
+        }
+
+        .variant-row a {
+            flex: 0 0 auto;
+            margin-left: 10px;
+            color: #25D366;
+            font-size: 2rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .variant-row a:hover {
+            color: #128C7E;
+        }
+
+        .variant-row:hover {
+            background-color: var(--red-dark);
+            color: white;
+        }
+
+        .search-box {
+            border-radius: 30px;
+            padding: 20px;
+            background: white;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--red-light);
+            border-color: var(--red-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .card-title {
+            color: var(--red-dark);
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: white !important;
+            opacity: 0.8;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            opacity: 1;
+        }
+
+        .variants {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .col-md-6 {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            #searchInput {
+                text-align: center;
+            }
+
+            .price-range {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            #priceRange {
+                width: auto;
+                max-width: 150px;
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+        }
+
+        .sidebar {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            padding-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-bottom: 20px;
+            }
+
+            .main-content {
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid my-5">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <h4>Filter Mobil</h4>
+                    <div class="filter-section">
+                        <select class="form-select filter-transmisi">
+                            <option value="">Pilih Transmisi</option>
+                            <option value="CVT">CVT</option>
+                            <option value="Manual">Manual</option>
+                            <option value="e-CVT">e-CVT</option>
+                            <option value="Automatic">Automatic</option>
+                        </select>
+                    </div>
+                    <div class="filter-section mt-3">
+                        <select class="form-select filter-penumpang">
+                            <option value="">Pilih Kapasitas Penumpang</option>
+                            <option value="5">5 Orang</option>
+                            <option value="7">7 Orang</option>
+                        </select>
+                    </div>
+                    <div class="filter-section mt-3">
+                        <select class="form-select filter-garansi">
+                            <option value="">Pilih Garansi</option>
+                            <option value="3 Tahun">3 Tahun atau 100.000 km</option>
+                            <option value="5 Tahun">5 Tahun atau 150.000 km</option>
+                        </select>
+                    </div>
+                    <div class="filter-section mt-3">
+                        <select class="form-select filter-konsumsi">
+                            <option value="">Pilih Konsumsi Bahan Bakar</option>
+                            <option value="15 km/L">15 km/L</option>
+                            <option value="17 km/L">17 km/L</option>
+                            <option value="20 km/L">20 km/L</option>
+                            <option value="Belum Tersedia">Belum Tersedia</option>
+                        </select>
+                    </div>
+                    <button id="applyFilter" class="btn btn-primary w-100 mt-3">Terapkan Filter</button>
+                    <button id="resetFilter" class="btn btn-secondary w-100 mt-2">Reset Filter</button>
+                </div>
+            </div>
+            <div class="col-md-9 main-content">
+                <div class="search-box">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Cari model mobil...">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="price-range d-flex align-items-center gap-2">
+                                <select class="form-select" id="priceRange">
+                                    <option value="">Semua Harga</option>
+                                    <option value="0-300">Dibawah 300 Juta</option>
+                                    <option value="300-500">300 - 500 Juta</option>
+                                    <option value="500-plus">Diatas 500 Juta</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-4" id="carContainer">
+                    <!-- Mobil akan ditampilkan di sini -->
+                </div>
+                <div class="text-center mt-5">
+                    <a href="comparison.html" class="btn btn-primary btn-lg">Bandingkan Mobil</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function formatPrice(price) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(price);
+            }
+
+            function filterCars() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const priceRange = document.getElementById('priceRange').value;
+                const transmisiFilter = document.querySelector('.filter-transmisi').value;
+                const penumpangFilter = document.querySelector('.filter-penumpang').value;
+                const garansiFilter = document.querySelector('.filter-garansi').value;
+                const konsumsiFilter = document.querySelector('.filter-konsumsi').value;
+
+                const filteredCars = cars.map(car => {
+                    const carNameMatch = car.name.toLowerCase().includes(searchTerm);
+                    const filteredVariants = car.variants.filter(variant => {
+                        const variantNameMatch = variant.name.toLowerCase().includes(searchTerm);
+                        let priceMatch = true;
+                        if (priceRange) {
+                            const price = variant.price;
+                            switch(priceRange) {
+                                case '0-300':
+                                    priceMatch = price < 300000000;
+                                    break;
+                                case '300-500':
+                                    priceMatch = price >= 300000000 && price <= 500000000;
+                                    break;
+                                case '500-plus':
+                                    priceMatch = price > 500000000;
+                                    break;
+                            }
+                        }
+                        const transmisiMatch = !transmisiFilter || variant.specs.transmisi.toLowerCase().includes(transmisiFilter.toLowerCase());
+                        const penumpangMatch = !penumpangFilter || variant.specs.kapasitasPenumpang.split(' ')[0] === penumpangFilter;
+                        const garansiMatch = !garansiFilter || variant.specs.garansi.toLowerCase().includes(garansiFilter.toLowerCase());
+                        const konsumsiMatch = !konsumsiFilter || variant.specs.konsumsiBahanBakar.toLowerCase().includes(konsumsiFilter.toLowerCase());
+
+                        return (carNameMatch || variantNameMatch) && priceMatch && transmisiMatch && penumpangMatch && garansiMatch && konsumsiMatch;
+                    });
+
+                    if (filteredVariants.length > 0) {
+                        return {
+                            ...car,
+                            variants: filteredVariants
+                        };
+                    }
+                    return null;
+                }).filter(car => car !== null);
+
+                renderCars(filteredCars);
+            }
+
+            document.getElementById('searchInput').addEventListener('input', filterCars);
+            document.getElementById('priceRange').addEventListener('change', filterCars);
+            document.querySelector('.filter-transmisi').addEventListener('change', filterCars);
+            document.querySelector('.filter-penumpang').addEventListener('change', filterCars);
+            document.querySelector('.filter-garansi').addEventListener('change', filterCars);
+            document.querySelector('.filter-konsumsi').addEventListener('change', filterCars);
+
+            function resetFilter() {
+                document.querySelectorAll('.form-select').forEach(select => {
+                    select.value = '';
+                });
+                document.getElementById('searchInput').value = '';
+                document.getElementById('priceRange').value = '';
+                renderCars(cars);
+            }
+
+            document.getElementById('applyFilter').addEventListener('click', filterCars);
+            document.getElementById('resetFilter').addEventListener('click', resetFilter);
+
+            function renderCars(filteredCars = cars) {
+                const container = document.getElementById('carContainer');
+                container.innerHTML = '';
+
+                filteredCars.forEach(car => {
+                    const card = `
+                        <div class="col-lg-6 col-xl-4 car-item">
+                            <div class="car-card card h-100 position-relative">
+                                <img src="${car.image}" class="card-img-top" alt="${car.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${car.name}</h5>
+                                    <p class="mb-2">Mulai dari <span class="price-tag">${formatPrice(car.startingPrice)}</span></p>
+                                    <div class="variants">
+                                        <h5 class="fw-bold">Tipe</h5>
+                                        ${car.variants.map(variant => `
+                                            <div class="variant-row d-flex justify-content-between align-items-center p-2" data-car-id="${car.id}" data-variant-name="${variant.name}" data-variant-price="${variant.price}">
+                                                <span>${variant.name}</span>
+                                                <div>
+                                                    <span class="fw-bold">${formatPrice(variant.price)}</span>
+                                                </div>
+                                                <a href="https://wa.me/6285643376540?text=Halo,%20saya%20ingin%20membeli%20${encodeURIComponent(variant.name)}%20dengan%20harga%20${encodeURIComponent(formatPrice(variant.price))}" class="ms-2" target="_blank">
+                                                    <i class="fab fa-whatsapp"></i>
+                                                </a>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            }
+
+            let cars = [];
+
+            fetch('ambil_datafitur.php')
+                .then(response => response.json())
+                .then(data => {
+                    cars = data;
+                    renderCars(cars);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

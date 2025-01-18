@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Mobil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .filter-sidebar {
+            width: 250px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .main-content {
+            flex: 1;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .feature-container {
+            margin-bottom: 15px;
+        }
+        
+        .feature-container label {
+            display: block;
+            margin: 8px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filter-sidebar">
+            <h3>Filter Fitur</h3>
+            <form id="filterForm" method="POST">
+                <div class="feature-container">
+                    <label>
+                        <input type="checkbox" name="features[]" value="1">
+                        Sunroof
+                    </label>
+                    <label>
+                        <input type="checkbox" name="features[]" value="2">
+                        Transmisi CVT
+                    </label>
+                    <label>
+                        <input type="checkbox" name="features[]" value="3">
+                        Transmisi Manual
+                    </label>
+                    <label>
+                        <input type="checkbox" name="features[]" value="4">
+                        Airbag
+                    </label>
+                    <label>
+                        <input type="checkbox" name="features[]" value="5">
+                        GPS
+                    </label>
+                </div>
+                <button type="button" onclick="filterCars()">Terapkan Filter</button>
+            </form>
+        </div>
+        
+        <div class="main-content">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Cari mobil..." onkeyup="searchCars()">
+            </div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load semua mobil saat halaman pertama kali dibuka
+        window.onload = function() {
+            filterCars();
+        };
+        
+        function filterCars() {
+            const checkboxes = document.querySelectorAll('input[name="features[]"]:checked');
+            const selectedFeatures = Array.from(checkboxes).map(cb => cb.value);
+            const searchQuery = document.getElementById('searchInput').value;
+            
+            fetch('filter.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `features=${JSON.stringify(selectedFeatures)}&search=${searchQuery}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('result').innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function searchCars() {
+            filterCars(); // Gunakan fungsi yang sama untuk filter dan search
+        }
+    </script>
+</body>
+</html>
