@@ -83,10 +83,6 @@
             color: white;
         }
 
-        .variant-row.selected {
-            border: 2px solid var(--red-light);
-        }
-
         .search-box {
             border-radius: 30px;
             padding: 20px;
@@ -108,15 +104,6 @@
         .card-title {
             color: var(--red-dark);
             font-weight: bold;
-        }
-
-        .comparison-table th {
-            background-color: var(--red-light);
-            color: white;
-        }
-
-        .comparison-table {
-            display: none;
         }
 
         .nav-link {
@@ -249,22 +236,8 @@
                 <div class="row g-4" id="carContainer">
                     <!-- Mobil akan ditampilkan di sini -->
                 </div>
-                <div class="comparison-table mt-5">
-                    <h3 class="mb-4">Perbandingan Mobil</h3>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Fitur</th>
-                                    <th id="car1Header">Mobil 1</th>
-                                    <th id="car2Header">Mobil 2</th>
-                                </tr>
-                            </thead>
-                            <tbody id="compareTableBody">
-                                <!-- Data perbandingan akan ditampilkan di sini -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="text-center mt-5">
+                    <a href="comparison.html" class="btn btn-primary btn-lg">Bandingkan Mobil</a>
                 </div>
             </div>
         </div>
@@ -380,151 +353,9 @@
                     `;
                     container.innerHTML += card;
                 });
-
-                initializeVariantRowClickHandlers();
-            }
-
-            function initializeVariantRowClickHandlers() {
-                const variantRows = document.querySelectorAll('.variant-row');
-                variantRows.forEach(row => {
-                    row.addEventListener('click', function () {
-                        const carId = this.dataset.carId;
-                        const variantName = this.dataset.variantName;
-                        const variantPrice = this.dataset.variantPrice;
-
-                        const index = selectedVariants.findIndex(v => v.carId === carId && v.variantName === variantName);
-                        if (index === -1) {
-                            if (selectedVariants.length >= 2) {
-                                alert("Anda hanya dapat membandingkan 2 mobil sekaligus.");
-                                return;
-                            }
-                            selectedVariants.push({ carId, variantName, variantPrice });
-                            this.classList.add('selected');
-                        } else {
-                            selectedVariants.splice(index, 1);
-                            this.classList.remove('selected');
-                        }
-
-                        if (selectedVariants.length === 2) {
-                            updateComparison();
-                            document.querySelector('.comparison-table').scrollIntoView({ behavior: 'smooth' });
-                        } else {
-                            document.querySelector('.comparison-table').style.display = 'none';
-                        }
-                    });
-                });
-            }
-
-            function updateComparison() {
-                const comparisonTable = document.querySelector('.comparison-table');
-
-                if (selectedVariants.length === 2) {
-                    comparisonTable.style.display = 'block';
-                    document.getElementById('car1Header').textContent = selectedVariants[0].variantName;
-                    document.getElementById('car2Header').textContent = selectedVariants[1].variantName;
-
-                    const car1 = cars.find(car => car.id == selectedVariants[0].carId);
-                    const car2 = cars.find(car => car.id == selectedVariants[1].carId);
-                    const variant1 = car1.variants.find(v => v.name === selectedVariants[0].variantName);
-                    const variant2 = car2.variants.find(v => v.name === selectedVariants[1].variantName);
-
-                    const fiturRelevan1 = Array.isArray(variant1.specs.fiturRelevan) ? variant1.specs.fiturRelevan : [];
-                    const fiturRelevan2 = Array.isArray(variant2.specs.fiturRelevan) ? variant2.specs.fiturRelevan : [];
-                    const fiturUnik1 = Array.isArray(variant1.specs.fiturUnik) ? variant1.specs.fiturUnik : [];
-                    const fiturUnik2 = Array.isArray(variant2.specs.fiturUnik) ? variant2.specs.fiturUnik : [];
-
-                    const tbody = document.getElementById('compareTableBody');
-                    tbody.innerHTML = `
-                        <tr>
-                            <td>Gambar</td>
-                            <td><img src="${car1.image}" alt="${car1.name}" class="img-fluid" style="max-width: 150px;"></td>
-                            <td><img src="${car2.image}" alt="${car2.name}" class="img-fluid" style="max-width: 150px;"></td>
-                        </tr>
-                        <tr>
-                            <td>Harga</td>
-                            <td>${formatPrice(selectedVariants[0].variantPrice)}</td>
-                            <td>${formatPrice(selectedVariants[1].variantPrice)}</td>
-                        </tr>
-                        <tr>
-                            <td>Mesin</td>
-                            <td>${variant1.specs.mesin}</td>
-                            <td>${variant2.specs.mesin}</td>
-                        </tr>
-                        <tr>
-                            <td>Tenaga</td>
-                            <td>${variant1.specs.tenaga}</td>
-                            <td>${variant2.specs.tenaga}</td>
-                        </tr>
-                        <tr>
-                            <td>Transmisi</td>
-                            <td>${variant1.specs.transmisi}</td>
-                            <td>${variant2.specs.transmisi}</td>
-                        </tr>
-                        <tr>
-                            <td>Konsumsi Bahan Bakar</td>
-                            <td>${variant1.specs.konsumsiBahanBakar}</td>
-                            <td>${variant2.specs.konsumsiBahanBakar}</td>
-                        </tr>
-                        <tr>
-                            <td>Kapasitas Penumpang</td>
-                            <td>${variant1.specs.kapasitasPenumpang}</td>
-                            <td>${variant2.specs.kapasitasPenumpang}</td>
-                        </tr>
-                        <tr>
-                            <td>Dimensi</td>
-                            <td>${variant1.specs.dimensi}</td>
-                            <td>${variant2.specs.dimensi}</td>
-                                <tr>
-                            <td>Ground Clearance</td>
-                            <td>${variant1.specs.groundClearance}</td>
-                            <td>${variant2.specs.groundClearance}</td>
-                        </tr>
-                        <tr>
-                            <td>Fitur Keamanan</td>
-                            <td>${variant1.specs.fiturKeamanan}</td>
-                            <td>${variant2.specs.fiturKeamanan}</td>
-                        </tr>
-                        <tr>
-                            <td>Hiburan</td>
-                            <td>${variant1.specs.hiburan}</td>
-                            <td>${variant2.specs.hiburan}</td>
-                        </tr>
-                        <tr>
-                            <td>Garansi</td>
-                            <td>${variant1.specs.garansi}</td>
-                            <td>${variant2.specs.garansi}</td>
-                        </tr>
-                        <tr>
-                            <td>Fitur Relevan</td>
-                            <td>${fiturRelevan1.join('<br>')}</td>
-                            <td>${fiturRelevan2.join('<br>')}</td>
-                        </tr>
-                        <tr>
-                            <td>Fitur Unik</td>
-                            <td>${fiturUnik1.join('<br>')}</td>
-                            <td>${fiturUnik2.join('<br>')}</td>
-                        </tr>
-                        <tr>
-                            <td>Aksi</td>
-                            <td>
-                                <a href="https://wa.me/6285643376540?text=Halo%20Admin%20*Honda%20Pasuruan*,%20saya%20tertarik%20dengan%20iklan%20dari%20Website%20*${encodeURIComponent(car1.name)}*%20bisa%20minta%20info%20lebih%20lanjutnya" class="btn-hubungi" target="_blank">
-                                    Hubungi Sekarang
-                                </a>
-                            </td>
-                            <td>
-                                <a href="https://wa.me/6285643376540?text=Halo%20Admin%20*Honda%20Pasuruan*,%20saya%20tertarik%20dengan%20iklan%20dari%20Website%20*${encodeURIComponent(car2.name)}*%20bisa%20minta%20info%20lebih%20lanjutnya" class="btn-hubungi" target="_blank">
-                                    Hubungi Sekarang
-                                </a>
-                            </td>
-                        </tr>
-                    `;
-                } else if (selectedVariants.length < 2) {
-                    comparisonTable.style.display = 'none';
-                }
             }
 
             let cars = [];
-            let selectedVariants = [];
 
             fetch('ambil_datafitur.php')
                 .then(response => response.json())
